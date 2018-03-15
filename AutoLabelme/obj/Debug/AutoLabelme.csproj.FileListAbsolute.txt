@@ -1,0 +1,10 @@
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.Form1.resources
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.csproj.GenerateResource.Cache
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\bin\Debug\AutoLabelme.exe.config
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\bin\Debug\AutoLabelme.exe
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\bin\Debug\AutoLabelme.pdb
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.Properties.Resources.resources
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.exe
+C:\Users\Administrator\source\repos\AutoSimLabelLocal\AutoLabelme\obj\Debug\AutoLabelme.pdb
