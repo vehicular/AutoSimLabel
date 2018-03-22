@@ -10,19 +10,31 @@ using System.Xml.Serialization;
 public class imgInfoSYS
 {
     public string img_name;
-    public float img_piexs_x;
-    public float img_piexs_y;
-    public float img_size_x;
-    public float img_size_y;
-    public float img_size_z;
+
+    public float objCenterPiexInImg_x;
+    public float objCenterPiexInImg_y;
+
+    public int prgCenterPiexInImg_x;
+    public int prgCenterPiexInImg_y;
+
+    public float obj_size_x;
+    public float obj_size_y;
+    public float obj_size_z;
+
+
+    public float objProjectionHeight; //y_max - y_min
+    public float objProjectionWidth; //x_max - x_max
+
     public float distance_to_cam;
+
     public float angle_to_img;
+
+
     public float cam_pos_x;
     public float cam_pos_y;
     public float cam_pos_Z;
+
     public float target_pos_x;
     public float target_pos_y;
     public float target_pos_z;
-    //public Array target_POS;
-    //public Array cam_Pos;
 }
