@@ -71,19 +71,27 @@ namespace AutoLabelme
 
                     Point P0 = new Point();
                     Point P1 = new Point();
-                    double scale = GetScale(imgInfo.distance_to_cam);
+                    float scale = GetScale(imgInfo.distance_to_cam);
+                    float height = scale * imgInfo.objProjectionHeight;
+                    float width = scale * imgInfo.objProjectionWidth;                   
+                    List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
+                    P0 = list[0];
+                    P1 = list[1];
 
-                    double width_left = centerPoint.X - scale * imgInfo.objProjectionWidth;
-                    double height_top = centerPoint.Y - scale * imgInfo.objProjectionHeight;
+                    /*
+                                        // ------the useful
+                                        Point P0 = new Point();
+                                        Point P1 = new Point();
+                                        float scale = GetScale(imgInfo.distance_to_cam);
 
-                    P0.X =Convert.ToInt32(Math.Ceiling(width_left));// object size
-                    P0.Y = Convert.ToInt32(Math.Ceiling(height_top));
+                                        P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
+                                        P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
+
+                                        P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
+                                        P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
 
 
-                    double width_right = centerPoint.X + scale * imgInfo.objProjectionWidth;
-                    double height_buttom = centerPoint.Y + scale * imgInfo.objProjectionHeight;
-                    P1.X = Convert.ToInt32(Math.Ceiling(width_right));
-                    P1.Y = Convert.ToInt32(Math.Ceiling(height_buttom));
+                                         */
 
                     DrawRect(openImage, P0,P1 , count+"", centerPoint);
                    
@@ -95,10 +103,42 @@ namespace AutoLabelme
             }
         }
 
-
-        public double GetScale(float distance)
+        
+        public List<Point>   GetOrignPointX(Point p0 ,Point p1, Point centerPoint ,float widthMargin ,float heightMargin, int imgBoundX,int imgBoundY)
         {
-            double scale = 0;
+            List<Point> lPoint = new List<Point>();
+            p0.X = Convert.ToInt32(centerPoint.X - widthMargin);
+            p1.X = Convert.ToInt32(centerPoint.X + widthMargin);
+
+            p0.Y= Convert.ToInt32(centerPoint.Y - heightMargin);
+            p1.Y = Convert.ToInt32(centerPoint.Y + heightMargin);
+
+            if (centerPoint.X - widthMargin <= 0)
+            {
+                p0.X = 1;
+            }
+            if(centerPoint.Y - heightMargin <= 0)
+            {
+                p0.Y = 1;
+            }
+            if(centerPoint.X + widthMargin >= imgBoundX)
+            {
+                //p0.X =Convert.ToInt32(centerPoint.X + widthMargin) - imgBoundX;
+                p1.X = imgBoundX-1;               
+            }
+            if (centerPoint.Y + heightMargin >= imgBoundY)
+            {
+                //p0.Y =Convert.ToInt32(centerPoint.Y + widthMargin) - imgBoundY;
+                p1.Y = imgBoundY-1;
+                
+            }
+            lPoint.Add(p0);
+            lPoint.Add(p1);
+            return lPoint;
+        }
+        public float GetScale(float distance)
+        {
+            float scale = 0;
             int distanceToInt = Convert.ToInt32(Math.Ceiling(distance)); ///user to the 2.3.4.5.6m
             //float distanceRemainder = distance - Convert.ToInt32(Math.Floor(distance));
 
@@ -193,7 +233,7 @@ namespace AutoLabelme
             return scale;
         }
 
-        public double scaleCalculate(float distance, float mileMin,float RectMax, float mileMax,float RectMin )
+        public float scaleCalculate(float distance, float mileMin,float RectMax, float mileMax,float RectMin )
         {
             return RectMax - (distance - mileMin) * (RectMax - RectMin) / (mileMax - mileMin);
         }
