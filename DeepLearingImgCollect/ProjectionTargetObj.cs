@@ -31,6 +31,7 @@ public class ProjectionTargetObj : MonoBehaviour {
     float miny ;
 
     Quaternion F;
+    Quaternion Fp;
 
     public GameObject pppp;
     public GameObject target;
@@ -55,6 +56,7 @@ public class ProjectionTargetObj : MonoBehaviour {
         Vector3 newZ = new Vector3(0, 0, 1);
 
         F = Quaternion.FromToRotation(CameraDirection, newZ);
+        Fp = Quaternion.Inverse(F);
 
         print("ppp in original space: " + pppp.transform.position);
         //Vector3 Object = new Vector3(34, 87, 9);
@@ -82,7 +84,7 @@ public class ProjectionTargetObj : MonoBehaviour {
         objProjectHeight = maxy - miny;
         objProjectWidth = maxx - minx;
 
-        centerPosAfterProj = new Vector3((maxx + minx) / 2, (maxy + miny) / 2, minZPos.z);
+        centerPosAfterProj = Fp* (new Vector3((maxx + minx) / 2, (maxy + miny) / 2, minZPos.z));
 
         Debug.Log("the center Pos After Projection :" + centerPosAfterProj);
 
@@ -106,7 +108,7 @@ public class ProjectionTargetObj : MonoBehaviour {
             Vector3 miny = MINY(allProApexPos);
 
 
-            Quaternion Fp = Quaternion.Inverse(F);
+
 
             GameObject g = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             g.transform.localScale = new Vector3(.1f, 12f, .1f);
