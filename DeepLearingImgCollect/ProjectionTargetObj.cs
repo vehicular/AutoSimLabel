@@ -29,18 +29,44 @@ public class ProjectionTargetObj : MonoBehaviour {
     float maxy ;
     float minx ;
     float miny ;
+
+    Quaternion F;
+
+    public GameObject pppp;
+    public GameObject target;
+
     void Start()
     {
-        mesh = this.GetComponent<MeshFilter>().mesh;
+        mesh = target.GetComponent<MeshFilter>().mesh;
         vectors = mesh.vertices;
         //apexPos = new Vector3[mesh.vertices.Length];
         cam = cam.GetComponent<Camera>();
 
+        // angle of camera = heading of car
+        Vector3 CameraDirection;
+        CameraDirection = cam.ScreenToWorldPoint(
+            new Vector3(Screen.width / 2, Screen.height / 2, cam.nearClipPlane)
+            );
+        print("CameraDirection  " + CameraDirection);
+        GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        g.transform.localScale = new Vector3(.1f, .1f, .1f);
+        g.transform.position = 10*CameraDirection;
+
+        Vector3 newZ = new Vector3(0, 0, 1);
+
+        F = Quaternion.FromToRotation(CameraDirection, newZ);
+
+        print("ppp in original space: " + pppp.transform.position);
+        //Vector3 Object = new Vector3(34, 87, 9);
+        Vector3 NewObject = F * pppp.transform.position;
+        print("ppp in new space: " + NewObject);
+        NewObject = Quaternion.Inverse( F) * NewObject;
+        print("ppp back to space: " + NewObject);
 
         for (int i = 0; i < vectors.Length; i++)
         {          
             Vector3 v = this.transform.TransformPoint(vectors[i]);
-            allApexPos.Add(v);          
+            allApexPos.Add(F * v);          
         }
         minZPos = FindMinZ(allApexPos);
         for (int i = 0; i < allApexPos.Count; i++)
@@ -80,24 +106,31 @@ public class ProjectionTargetObj : MonoBehaviour {
             Vector3 miny = MINY(allProApexPos);
 
 
+            Quaternion Fp = Quaternion.Inverse(F);
 
             GameObject g = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             g.transform.localScale = new Vector3(.1f, 12f, .1f);
-            g.transform.position = maxx;
+            g.transform.rotation = Fp * g.transform.rotation;
+            g.transform.position = Fp * maxx;
+            
 
             GameObject g2 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             g2.transform.localScale = new Vector3(.1f, 12f, .1f);
-            g2.transform.position = minx;
+            g2.transform.rotation = Fp * g2.transform.rotation;
+            g2.transform.position = Fp * minx;
 
             GameObject g1 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             g1.transform.localScale = new Vector3(12, 0.1f, 0.1f);
-            g1.transform.position = maxy;
+            g1.transform.rotation = Fp * g1.transform.rotation;
+            g1.transform.position = Fp * maxy;
 
             GameObject g3 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             g3.transform.localScale = new Vector3(12, 0.1f, 0.1f);
-            g3.transform.position = miny;
+            g3.transform.rotation = Fp * g3.transform.rotation;
+            g3.transform.position = Fp * miny;
 
 
+            /*
             for (int i = 0; i < vectors.Length; i++)
             {
                 Vector3 v = ProXYZ(allApexPos[i], minZPos);
@@ -105,6 +138,7 @@ public class ProjectionTargetObj : MonoBehaviour {
                 g5.transform.localScale = new Vector3(.1f, .1f, .1f);
                 g5.transform.position = v;
             }
+            */
             Debug.Log("max x :" + maxx + " max y :0" + maxy + "min x:" + minx + "MIN y: " + miny);
             Debug.Log("Height ---:" + objProjectHeight + "Width ======:" + objProjectWidth);
 
