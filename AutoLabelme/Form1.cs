@@ -23,8 +23,8 @@ namespace AutoLabelme
         /// <summary>
         /// //
         /// </summary>
-        string imgFoldPath = @"D:\ad_simulation_Logitech\ad_simulation\va_sim\Drive_1_4_2\signShots\\";//The Image Folder
-        string imgInfoPath = @"D:\ad_simulation_Logitech\ad_simulation\va_sim\Drive_1_4_2\img_info_folder\\ ";//The ImageTXT Folder
+        string imgFoldPath = "";     //the image folder  Path
+        string imgInfoPath = "";    // the image txt folder Path
 
         DirectoryInfo imgFold;
         DirectoryInfo imgInfoFold;
@@ -94,7 +94,15 @@ namespace AutoLabelme
                                          */
 
                     DrawRect(openImage, P0,P1 , count+"", centerPoint);
-                   
+
+                    //After DrawRect ,create the Label Xml File
+                    imgInfoAfterLabel labelSYS = new imgInfoAfterLabel();
+                    labelSYS.labelObj_name = imgInfo.img_name;
+                    labelSYS.bound_left_x = P0.X;
+                    labelSYS.bound_right_x = P1.X;
+                    labelSYS.bound_right_y = P0.Y;
+                    labelSYS.bound_right_y = P1.Y;
+                    XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory + count + ".txt", labelSYS);
                 }
                 textBox1.Text = "All picture label finished";
             }else
