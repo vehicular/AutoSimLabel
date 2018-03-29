@@ -15,11 +15,20 @@ public class XMLWR
     {
         XmlSerializer imgXML = new XmlSerializer(typeof(imgInfoSYS));
         TextWriter dbWriter = new StreamWriter(filePath);
-        imgSYS = new imgInfoSYS();
+        //imgSYS = new imgInfoSYS();
         imgXML.Serialize(dbWriter, imgSYS);
         dbWriter.Close();
     }
 
+
+    public static void CreateLabelXML(string filePath, imgInfoAfterLabel labelSYS)
+    {
+        XmlSerializer labelXML = new XmlSerializer(typeof(imgInfoAfterLabel));
+        TextWriter dbWriter = new StreamWriter(filePath);
+        // labelSYS = new imgInfoAfterLabel();
+        labelXML.Serialize(dbWriter, labelSYS);
+        dbWriter.Close();
+    }
     public static imgInfoSYS ReadObject(string filePath)
     {
         imgInfoSYS _message = null;
