@@ -22,6 +22,9 @@ public class imgInfoSYS
     public float obj_size_z;
 
 
+    public int imgSizeX;
+    public int imgSizeY;
+
     public float objProjectionHeight; //y_max - y_min
     public float objProjectionWidth; //x_max - x_max
 
