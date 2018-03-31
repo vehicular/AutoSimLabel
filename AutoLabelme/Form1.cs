@@ -42,7 +42,7 @@ namespace AutoLabelme
         private void button3_Click(object sender, EventArgs e)
         {
 
-            try
+          try
             {
                 imgFold = new DirectoryInfo(imgFoldPath);
                 imgInfoFold = new DirectoryInfo(imgInfoPath);
@@ -52,11 +52,11 @@ namespace AutoLabelme
                 Console.WriteLine("Open Folder error :" + ex.Message);
             }
 
-            imgFiles = imgFold.GetFiles();
-            imgInfoFiles = imgInfoFold.GetFiles();
-            if (imgFiles.Length == imgInfoFiles.Length)
+             imgFiles = imgFold.GetFiles();
+             imgInfoFiles = imgInfoFold.GetFiles();
+             if (imgFiles.Length == imgInfoFiles.Length)
             {
-                for (int count = 0; count < imgInfoFiles.Length; count++)
+                for (int count=0; count<imgInfoFiles.Length;count++)
                 {
                     ///------------open Image 
                     this.pictureBox1.Load(imgFiles[count].FullName);
@@ -68,88 +68,86 @@ namespace AutoLabelme
 
                     //the obj center Point in image ,
                     //int pos_x =Convert.ToInt32(imgInfo.prgCenterPiexInImg_x);
-                    // int pos_y =Convert.ToInt32(imgInfo.prgCenterPiexInImg_y);
-                    int pos_x = Convert.ToInt32(imgInfo.objCenterPiexInImg_x);
-                    int pos_y = Convert.ToInt32(imgInfo.objCenterPiexInImg_y);
-                    Point centerPoint = new Point(pos_x, pos_y);
+                   // int pos_y =Convert.ToInt32(imgInfo.prgCenterPiexInImg_y);
+                   int pos_x =Convert.ToInt32(imgInfo.objCenterPiexInImg_x);
+                   int pos_y =Convert.ToInt32(imgInfo.objCenterPiexInImg_y);
+                   Point centerPoint = new Point(pos_x, pos_y);
 
                     objName = imgInfo.img_name;
                     //---Function GetOrignPointX Test 
+                    
 
+                   //   float scale = GetScale(imgInfo.distance_to_cam) ;
+                   // float height = scale * imgInfo.objProjectionHeight * 1.2f;
+                  //  float width = scale * imgInfo.objProjectionWidth * 0.5f;
+                    P0.X = imgInfo.imgMinXPoint;
+                    P0.Y = imgInfo.imgMinYPoint;
+                    P1.X = imgInfo.imgMaxXPoint;
+                    P1.Y = imgInfo.imgMaxYPoint;
 
-                    float scale = GetScale(imgInfo.distance_to_cam);
+                    /* List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
+                     P0 = list[0];
+                     P1 = list[1];
 
-                    float height = scale * imgInfo.objProjectionHeight * 1.2f;
-                    float width = scale * imgInfo.objProjectionWidth * 0.5f;
-                    // P0.X = imgInfo.imgMinXPoint;
-                    // P0.Y = imgInfo.imgMinYPoint;
-                    // P1.X = imgInfo.imgMaxXPoint;
-                    // P1.Y = imgInfo.imgMaxYPoint;
+                                      // ------the useful
+                                      Point P0 = new Point();
+                                      Point P1 = new Point();
+                                      float scale = GetScale(imgInfo.distance_to_cam);
 
-                    List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
-                    P0 = list[0];
-                    P1 = list[1];
-                    /*
-                                     // ------the useful
-                                     Point P0 = new Point();
-                                     Point P1 = new Point();
-                                     float scale = GetScale(imgInfo.distance_to_cam);
+                                      P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
+                                      P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
 
-                                     P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
-                                     P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
+                                      P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
+                                      P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
+                                       */
 
-                                     P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
-                                     P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
-                                      */
-
-                    DrawRect(openImage, P0, P1, count + "", centerPoint);
+                    DrawRect(openImage, P0,P1 , count+"", centerPoint);
 
                     //After DrawRect ,create the Label Xml File
                     imgInfoAfterLabel labelSYS = new imgInfoAfterLabel();
                     labelSYS.labelObj_name = objName;
-                    labelSYS.bound_left_x = P0.X;
+                    labelSYS.bound_left_x  = P0.X;
                     labelSYS.bound_right_x = P1.X;
                     labelSYS.bound_right_y = P0.Y;
                     labelSYS.bound_right_y = P1.Y;
-                    XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory + count + ".txt", labelSYS);
+                    XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory +count+".txt", labelSYS);
 
                 }
                 textBox1.Text = "All picture label finished";
-            }
-            else
+            }else
             {
                 Console.WriteLine("The TXT Length is not equal to Image Length");
             }
         }
 
-
-        public List<Point> GetOrignPointX(Point p0, Point p1, Point centerPoint, float widthMargin, float heightMargin, int imgBoundX, int imgBoundY)
+        
+        public List<Point>   GetOrignPointX(Point p0 ,Point p1, Point centerPoint ,float widthMargin ,float heightMargin, int imgBoundX,int imgBoundY)
         {
             List<Point> lPoint = new List<Point>();
             p0.X = Convert.ToInt32(centerPoint.X - widthMargin);
             p1.X = Convert.ToInt32(centerPoint.X + widthMargin);
 
-            p0.Y = Convert.ToInt32(centerPoint.Y - heightMargin);
+            p0.Y= Convert.ToInt32(centerPoint.Y - heightMargin);
             p1.Y = Convert.ToInt32(centerPoint.Y + heightMargin);
 
             if (centerPoint.X - widthMargin <= 0)
             {
                 p0.X = 1;
             }
-            if (centerPoint.Y - heightMargin <= 0)
+            if(centerPoint.Y - heightMargin <= 0)
             {
                 p0.Y = 1;
             }
-            if (centerPoint.X + widthMargin >= imgBoundX)
+            if(centerPoint.X + widthMargin >= imgBoundX)
             {
                 //p0.X =Convert.ToInt32(centerPoint.X + widthMargin) - imgBoundX;
-                p1.X = imgBoundX - 1;
+                p1.X = imgBoundX-1;               
             }
             if (centerPoint.Y + heightMargin >= imgBoundY)
             {
                 //p0.Y =Convert.ToInt32(centerPoint.Y + widthMargin) - imgBoundY;
-                p1.Y = imgBoundY - 1;
-
+                p1.Y = imgBoundY-1;
+                
             }
             lPoint.Add(p0);
             lPoint.Add(p1);
@@ -162,7 +160,7 @@ namespace AutoLabelme
             //float distanceRemainder = distance - Convert.ToInt32(Math.Floor(distance));
 
             //0?
-            if (distanceToInt >= 2 && distanceToInt <= 4)
+            if (distanceToInt >= 2 && distanceToInt <=4)
             {
                 scale = affirScale[distanceToInt - 2];
             }/*
@@ -195,11 +193,11 @@ namespace AutoLabelme
             {
                 scale = scaleCalculate(distance, 6.0f, 54f, 7.0f, 50f);
             }
-            else if (distance >= 7.0 && distance < 8)
+             else if (distance >= 7.0 && distance < 8)
             {
                 scale = scaleCalculate(distance, 7.0f, 44f, 8.0f, 40f);
             }
-
+           
             else if (distance >= 8 && distance < 10)
             {
                 scale = scaleCalculate(distance, 8.0f, 42f, 10.0f, 35f);
@@ -222,9 +220,8 @@ namespace AutoLabelme
             }
             else if (distance >= 45 && distance < 60)
             {
-                scale = scaleCalculate(distance, 45.0f, 10f, 60.0f, 8f);
-            }
-            else if (distance >= 60 && distance < 70)
+                scale = scaleCalculate(distance, 45.0f, 10f, 60.0f,8f);
+            }else if(distance >=60  && distance < 70)
             {
                 scale = 5;
             }
@@ -240,7 +237,7 @@ namespace AutoLabelme
                 //scale = affirScale[distanceToInt - 2];
             }
 */
-            else if (distance >= 70 && distance < 80)
+            else if(distance >= 70 && distance < 80)
             {
                 scale = 4;
             }
@@ -248,33 +245,33 @@ namespace AutoLabelme
             {
                 scale = 3;
             }
-
+            
             return scale;
         }
 
-        public float scaleCalculate(float distance, float mileMin, float RectMax, float mileMax, float RectMin)
+        public float scaleCalculate(float distance, float mileMin,float RectMax, float mileMax,float RectMin )
         {
             return RectMax - (distance - mileMin) * (RectMax - RectMin) / (mileMax - mileMin);
         }
         //------Draw Rect
-        public void DrawRect(Image image, Point p0, Point p1, string saveImgPath, Point center)
+        public void  DrawRect(Image image ,Point p0 ,Point p1,string saveImgPath, Point center)
         {
-            Pen pen = new Pen(Color.Red, 2);
-            // Create bitmap
-            using (Bitmap newImage = new Bitmap(image.Width, image.Height))
-            {
-
-                // Crop and resize the image.
-                // Rectangle destination = new Rectangle(0, 0, 200, 120);
-                using (Graphics graphic = Graphics.FromImage(image))
+                Pen pen = new Pen(Color.Red, 2);         
+                // Create bitmap
+                using (Bitmap newImage = new Bitmap(image.Width,image.Height))
                 {
-                    graphic.DrawRectangle(pen, p0.X, p0.Y, p1.X - p0.X, p1.Y - p0.Y);
-                    graphic.DrawRectangle(pen, center.X - 1, center.Y - 1, 2, 2);  //--test ,create the center-Point in image
-                }
-                image.Save(AppDomain.CurrentDomain.BaseDirectory + saveImgPath + ".jpg");
-            }
-        }
 
+                    // Crop and resize the image.
+                   // Rectangle destination = new Rectangle(0, 0, 200, 120);
+                    using (Graphics graphic = Graphics.FromImage(image))
+                    {
+                        graphic.DrawRectangle(pen, p0.X , p0.Y, p1.X-p0.X, p1.Y-p0.Y);
+                        graphic.DrawRectangle(pen, center.X - 1, center.Y - 1, 2,2);  //--test ,create the center-Point in image
+                    }
+                    image.Save(AppDomain.CurrentDomain.BaseDirectory + saveImgPath +".jpg");
+                }
+        }
+          
         //------------
         private void pictureBox1_Click(object sender, EventArgs e)
         {
