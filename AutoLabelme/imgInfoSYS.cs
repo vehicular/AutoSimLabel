@@ -22,6 +22,7 @@ public class imgInfoSYS
     public float obj_size_z;
 
 
+
     public int imgSizeX;
     public int imgSizeY;
 
@@ -40,4 +41,10 @@ public class imgInfoSYS
     public float target_pos_x;
     public float target_pos_y;
     public float target_pos_z;
+
+
+    public int imgMinXPoint;
+    public int imgMinYPoint;
+    public int imgMaxXPoint;
+    public int imgMaxYPoint;
 }
