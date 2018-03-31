@@ -77,29 +77,30 @@ namespace AutoLabelme
                     //---Function GetOrignPointX Test 
 
 
-                    // float scale = GetScale(imgInfo.distance_to_cam);
+                    float scale = GetScale(imgInfo.distance_to_cam);
 
-                    // float height = scale * imgInfo.objProjectionHeight;
-                    // float width = scale * imgInfo.objProjectionWidth;
-                    P0.X = imgInfo.imgMinXPoint;
-                    P0.Y = imgInfo.imgMinYPoint;
-                    P1.X = imgInfo.imgMaxXPoint;
-                    P1.Y = imgInfo.imgMaxYPoint;
-                    /*
+                    float height = scale * imgInfo.objProjectionHeight * 1.2f;
+                    float width = scale * imgInfo.objProjectionWidth * 0.5f;
+                    // P0.X = imgInfo.imgMinXPoint;
+                    // P0.Y = imgInfo.imgMinYPoint;
+                    // P1.X = imgInfo.imgMaxXPoint;
+                    // P1.Y = imgInfo.imgMaxYPoint;
+
                     List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
                     P0 = list[0];
                     P1 = list[1];
-                                        // ------the useful
-                                        Point P0 = new Point();
-                                        Point P1 = new Point();
-                                        float scale = GetScale(imgInfo.distance_to_cam);
+                    /*
+                                     // ------the useful
+                                     Point P0 = new Point();
+                                     Point P1 = new Point();
+                                     float scale = GetScale(imgInfo.distance_to_cam);
 
-                                        P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
-                                        P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
+                                     P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
+                                     P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
 
-                                        P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
-                                        P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
-                                         */
+                                     P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
+                                     P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
+                                      */
 
                     DrawRect(openImage, P0, P1, count + "", centerPoint);
 
