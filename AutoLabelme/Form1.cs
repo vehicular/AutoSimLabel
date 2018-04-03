@@ -26,6 +26,12 @@ namespace AutoLabelme
         string imgFoldPath = "" ;//The Image Folder
         string imgInfoPath = "" ;//The ImageTXT Folder
 
+        string imgOutputPath = "";
+        string imgInfoOutputPath = "";
+        DirectoryInfo imgOutputFolder;
+        DirectoryInfo imgInfoOutputFolder;
+
+
         DirectoryInfo imgFold;
         DirectoryInfo imgInfoFold;
         FileInfo[] imgFiles;
@@ -44,7 +50,9 @@ namespace AutoLabelme
 
             imgFoldPath = textBox1.Text;
             imgInfoPath = textBox2.Text;
-            if(imgFoldPath == "" || imgInfoPath == "")
+            imgOutputPath = textBox4.Text;
+            imgInfoOutputPath = textBox5.Text;
+            if(imgFoldPath == "" || imgInfoPath == "" || imgOutputPath == "" || imgInfoOutputPath == "")
             {
                 textBox3.Text = "Please Input The Folder Path";
             }
@@ -53,6 +61,13 @@ namespace AutoLabelme
                   {
                     imgFold = new DirectoryInfo(imgFoldPath);
                     imgInfoFold = new DirectoryInfo(imgInfoPath);
+
+                    if(Directory.Exists(imgOutputPath) ==false && Directory.Exists(imgInfoOutputPath) == false)
+                    {
+                        Directory.CreateDirectory(imgOutputPath);
+                        Directory.CreateDirectory(imgInfoOutputPath);
+                    }
+
                     imgFiles = imgFold.GetFiles();
                     imgInfoFiles = imgInfoFold.GetFiles();
                         if (imgFiles.Length == imgInfoFiles.Length)
@@ -97,8 +112,9 @@ namespace AutoLabelme
                             P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
                             P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
                             */
-
-                            DrawRect(openImage, P0, P1, count + "", centerPoint);
+                         
+                           
+                            DrawRect(openImage, P0, P1,imgOutputPath+"\\", count + "", centerPoint);
 
                             //After DrawRect ,create the Label Xml File
                             imgInfoAfterLabel labelSYS = new imgInfoAfterLabel();
@@ -107,9 +123,9 @@ namespace AutoLabelme
                             labelSYS.bound_right_x = P1.X;
                             labelSYS.bound_right_y = P0.Y;
                             labelSYS.bound_right_y = P1.Y;
-                            XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory + count + ".txt", labelSYS);
+                            XMLWR.CreateLabelXML(imgInfoOutputPath+"\\"  + count + ".txt", labelSYS);
+                            }
 
-                        }
                         textBox3.Text = "All Image Label Finished";
                     }
                     else
@@ -258,7 +274,7 @@ namespace AutoLabelme
             return RectMax - (distance - mileMin) * (RectMax - RectMin) / (mileMax - mileMin);
         }
         //------Draw Rect
-        public void  DrawRect(Image image ,Point p0 ,Point p1,string saveImgPath, Point center)
+        public void  DrawRect(Image image ,Point p0 ,Point p1,string imgOutPut,string saveImgPath, Point center)
         {
                 Pen pen = new Pen(Color.Red, 2);         
                 // Create bitmap
@@ -270,9 +286,9 @@ namespace AutoLabelme
                     using (Graphics graphic = Graphics.FromImage(image))
                     {
                         graphic.DrawRectangle(pen, p0.X , p0.Y, p1.X-p0.X, p1.Y-p0.Y);
-                        graphic.DrawRectangle(pen, center.X - 1, center.Y - 1, 2,2);  //--test ,create the center-Point in image
+                       // graphic.DrawRectangle(pen, center.X - 1, center.Y - 1, 2,2);  //--test ,create the center-Point in image
                     }
-                    image.Save(AppDomain.CurrentDomain.BaseDirectory + saveImgPath +".jpg");
+                    image.Save(imgOutPut + saveImgPath +".jpg");
                 }
         }
           
