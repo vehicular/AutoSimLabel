@@ -23,8 +23,8 @@ namespace AutoLabelme
         /// <summary>
         /// //
         /// </summary>
-        string imgFoldPath = @"C:\Users\Administrator\Documents\GitHub\Alisa_Mao\DeepLearningFirstVersion\simulation\ad_simulation\va_sim\Drive_1_4_2\signShots\\";//The Image Folder
-        string imgInfoPath = @"C:\Users\Administrator\Documents\GitHub\Alisa_Mao\DeepLearningFirstVersion\simulation\ad_simulation\va_sim\Drive_1_4_2\img_info_folder\\ ";//The ImageTXT Folder
+        string imgFoldPath = "" ;//The Image Folder
+        string imgInfoPath = "" ;//The ImageTXT Folder
 
         DirectoryInfo imgFold;
         DirectoryInfo imgInfoFold;
@@ -42,83 +42,87 @@ namespace AutoLabelme
         private void button3_Click(object sender, EventArgs e)
         {
 
-          try
+            imgFoldPath = textBox1.Text;
+            imgInfoPath = textBox2.Text;
+            if(imgFoldPath == "" || imgInfoPath == "")
             {
-                imgFold = new DirectoryInfo(imgFoldPath);
-                imgInfoFold = new DirectoryInfo(imgInfoPath);
+                textBox3.Text = "Please Input The Folder Path";
             }
+            else { 
+               try
+                  {
+                    imgFold = new DirectoryInfo(imgFoldPath);
+                    imgInfoFold = new DirectoryInfo(imgInfoPath);
+                    imgFiles = imgFold.GetFiles();
+                    imgInfoFiles = imgInfoFold.GetFiles();
+                        if (imgFiles.Length == imgInfoFiles.Length)
+                        {
+                        for (int count = 0; count < imgInfoFiles.Length; count++)
+                        {
+                            ///------------open Image 
+                            this.pictureBox1.Load(imgFiles[count].FullName);
+                            this.pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+                            openImage = this.pictureBox1.Image;
+
+                            //open Txt file
+                            imgInfoSYS imgInfo = XMLWR.ReadObject(imgInfoFiles[count].FullName);
+
+                            //the obj center Point in image ,
+                            //int pos_x =Convert.ToInt32(imgInfo.prgCenterPiexInImg_x);
+                            // int pos_y =Convert.ToInt32(imgInfo.prgCenterPiexInImg_y);
+                            int pos_x = Convert.ToInt32(imgInfo.objCenterPiexInImg_x);
+                            int pos_y = Convert.ToInt32(imgInfo.objCenterPiexInImg_y);
+                            Point centerPoint = new Point(pos_x, pos_y);
+
+                            // objName = imgInfo.img_name;
+                            //   float scale = GetScale(imgInfo.distance_to_cam) ;
+                            // float height = scale * imgInfo.objProjectionHeight * 1.2f;
+                            //  float width = scale * imgInfo.objProjectionWidth * 0.5f;
+                            P0.X = imgInfo.imgMinXPoint;
+                            P0.Y = imgInfo.imgMinYPoint;
+                            P1.X = imgInfo.imgMaxXPoint;
+                            P1.Y = imgInfo.imgMaxYPoint;
+
+                            /* 
+                            List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
+                            P0 = list[0];
+                            P1 = list[1];
+                            Point P0 = new Point();
+                            Point P1 = new Point();
+                            float scale = GetScale(imgInfo.distance_to_cam);
+
+                            P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
+                            P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
+
+                            P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
+                            P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
+                            */
+
+                            DrawRect(openImage, P0, P1, count + "", centerPoint);
+
+                            //After DrawRect ,create the Label Xml File
+                            imgInfoAfterLabel labelSYS = new imgInfoAfterLabel();
+                            labelSYS.labelObj_name = imgInfo.img_name;
+                            labelSYS.bound_left_x = P0.X;
+                            labelSYS.bound_right_x = P1.X;
+                            labelSYS.bound_right_y = P0.Y;
+                            labelSYS.bound_right_y = P1.Y;
+                            XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory + count + ".txt", labelSYS);
+
+                        }
+                        textBox3.Text = "All Image Label Finished";
+                    }
+                    else
+                    {
+                        textBox3.Text = "The TXT Length Is Not Equal To Image Length";
+                    }
+                }
             catch (Exception ex)
             {
-                Console.WriteLine("Open Folder error :" + ex.Message);
-            }
-
-             imgFiles = imgFold.GetFiles();
-             imgInfoFiles = imgInfoFold.GetFiles();
-             if (imgFiles.Length == imgInfoFiles.Length)
-            {
-                for (int count=0; count<imgInfoFiles.Length;count++)
-                {
-                    ///------------open Image 
-                    this.pictureBox1.Load(imgFiles[count].FullName);
-                    this.pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
-                    openImage = this.pictureBox1.Image;
-
-                    //open Txt file
-                    imgInfoSYS imgInfo = XMLWR.ReadObject(imgInfoFiles[count].FullName);
-
-                    //the obj center Point in image ,
-                    //int pos_x =Convert.ToInt32(imgInfo.prgCenterPiexInImg_x);
-                   // int pos_y =Convert.ToInt32(imgInfo.prgCenterPiexInImg_y);
-                   int pos_x =Convert.ToInt32(imgInfo.objCenterPiexInImg_x);
-                   int pos_y =Convert.ToInt32(imgInfo.objCenterPiexInImg_y);
-                   Point centerPoint = new Point(pos_x, pos_y);
-
-                    objName = imgInfo.img_name;
-                    //---Function GetOrignPointX Test 
-                    
-
-                   //   float scale = GetScale(imgInfo.distance_to_cam) ;
-                   // float height = scale * imgInfo.objProjectionHeight * 1.2f;
-                  //  float width = scale * imgInfo.objProjectionWidth * 0.5f;
-                    P0.X = imgInfo.imgMinXPoint;
-                    P0.Y = imgInfo.imgMinYPoint;
-                    P1.X = imgInfo.imgMaxXPoint;
-                    P1.Y = imgInfo.imgMaxYPoint;
-
-                    /* List<Point> list = GetOrignPointX(P0, P1, centerPoint, width, height, imgInfo.imgSizeX, imgInfo.imgSizeY);
-                     P0 = list[0];
-                     P1 = list[1];
-
-                                      // ------the useful
-                                      Point P0 = new Point();
-                                      Point P1 = new Point();
-                                      float scale = GetScale(imgInfo.distance_to_cam);
-
-                                      P0.X = Convert.ToInt32(centerPoint.X - scale * imgInfo.objProjectionWidth);
-                                      P0.Y = Convert.ToInt32(centerPoint.Y - scale * imgInfo.objProjectionHeight);                                  
-
-                                      P1.X = Convert.ToInt32(centerPoint.X + scale * imgInfo.objProjectionWidth);
-                                      P1.Y = Convert.ToInt32(centerPoint.Y + scale * imgInfo.objProjectionHeight);
-                                       */
-
-                    DrawRect(openImage, P0,P1 , count+"", centerPoint);
-
-                    //After DrawRect ,create the Label Xml File
-                    imgInfoAfterLabel labelSYS = new imgInfoAfterLabel();
-                    labelSYS.labelObj_name = objName;
-                    labelSYS.bound_left_x  = P0.X;
-                    labelSYS.bound_right_x = P1.X;
-                    labelSYS.bound_right_y = P0.Y;
-                    labelSYS.bound_right_y = P1.Y;
-                    XMLWR.CreateLabelXML(AppDomain.CurrentDomain.BaseDirectory +count+".txt", labelSYS);
-
-                }
-                textBox1.Text = "All picture label finished";
-            }else
-            {
-                Console.WriteLine("The TXT Length is not equal to Image Length");
-            }
+                    textBox3.Text = "Open Folder Error :" + ex.Message;
+            }          
         }
+     }
 
         
         public List<Point>   GetOrignPointX(Point p0 ,Point p1, Point centerPoint ,float widthMargin ,float heightMargin, int imgBoundX,int imgBoundY)
@@ -279,6 +283,26 @@ namespace AutoLabelme
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
         }
